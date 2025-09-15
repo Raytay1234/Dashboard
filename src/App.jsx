@@ -16,6 +16,7 @@ const App = () => {
     { title: "Card Title 3", content: "This is some content for card 3." },
   ]);
 
+  // Add new card
   const handleNewItem = () => {
     const newCard = {
       title: `Card Title ${cards.length + 1}`,
@@ -24,10 +25,19 @@ const App = () => {
     setCards([...cards, newCard]);
   };
 
+  // Delete a card
   const handleDeleteCard = (index) => {
     setCards(cards.filter((_, i) => i !== index));
   };
 
+  // Update a card
+  const handleUpdateCard = (index, updatedCard) => {
+    const newCards = [...cards];
+    newCards[index] = updatedCard;
+    setCards(newCards);
+  };
+
+  // Filter cards by search
   const filteredCards = cards.filter(
     (card) =>
       card.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -36,12 +46,14 @@ const App = () => {
 
   return (
     <div className="h-screen flex flex-col">
+      {/* Navbar */}
       <Navbar
         onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
         onSearch={(query) => setSearchQuery(query)}
         onNewItem={handleNewItem}
       />
 
+      {/* Layout */}
       <div className="flex flex-1 overflow-hidden">
         <Sidebar
           isOpen={isSidebarOpen}
@@ -49,9 +61,14 @@ const App = () => {
           onNavigate={(page) => setActivePage(page)}
         />
 
+        {/* Page content */}
         <main className="flex-1 overflow-y-auto bg-gray-100 p-6">
           {activePage === "home" && (
-            <Dashboard cards={filteredCards} onDelete={handleDeleteCard} />
+            <Dashboard
+              cards={filteredCards}
+              onDelete={handleDeleteCard}
+              onUpdate={handleUpdateCard}
+            />
           )}
           {activePage === "analytics" && <Analytics />}
           {activePage === "settings" && <Settings />}
