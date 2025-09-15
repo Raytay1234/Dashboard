@@ -6,7 +6,7 @@ import Analytics from "./components/Analytics";
 import Settings from "./components/Settings";
 import Profile from "./components/Profile";
 
-const App = () => {
+const App = ({ user, setUser }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [activePage, setActivePage] = useState("home");
   const [searchQuery, setSearchQuery] = useState("");
@@ -17,7 +17,13 @@ const App = () => {
     { title: "Card Title 3", content: "This is some content for card 3." },
   ]);
 
-  // Add new card
+  // Logout
+  const handleLogout = () => {
+    localStorage.removeItem("loggedInUser");
+    setUser(null);
+  };
+
+  // Add, Delete, Update, Filter cards
   const handleNewItem = () => {
     const newCard = {
       title: `Card Title ${cards.length + 1}`,
@@ -26,19 +32,16 @@ const App = () => {
     setCards([...cards, newCard]);
   };
 
-  // Delete a card
   const handleDeleteCard = (index) => {
     setCards(cards.filter((_, i) => i !== index));
   };
 
-  // Update a card
   const handleUpdateCard = (index, updatedCard) => {
     const newCards = [...cards];
     newCards[index] = updatedCard;
     setCards(newCards);
   };
 
-  // Filter cards by search
   const filteredCards = cards.filter(
     (card) =>
       card.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -60,6 +63,7 @@ const App = () => {
           isOpen={isSidebarOpen}
           onClose={() => setIsSidebarOpen(false)}
           onNavigate={(page) => setActivePage(page)}
+          onLogout={handleLogout} // 🔑 pass logout here
         />
 
         {/* Page content */}
@@ -72,8 +76,8 @@ const App = () => {
             />
           )}
           {activePage === "analytics" && <Analytics />}
-          {activePage === "profile" && <Profile />}
           {activePage === "settings" && <Settings />}
+          {activePage === "profile" && <Profile user={user} />}
           {activePage === "logout" && (
             <h2 className="text-2xl font-bold text-red-500">👋 Logged Out</h2>
           )}
