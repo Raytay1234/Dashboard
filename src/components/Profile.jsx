@@ -12,18 +12,18 @@ const Profile = () => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto">
+    <div className="max-w-2xl mx-auto relative z-0">
       <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-6">
         👤 My Profile
       </h2>
 
-      <div className="bg-white dark:bg-gray-900 rounded-xl shadow p-6 space-y-6">
+      <div className="bg-white dark:bg-gray-900 rounded-xl shadow p-6 space-y-6 relative z-0">
         {/* Avatar */}
         <div className="flex items-center space-x-4">
           <img
             src={`https://api.dicebear.com/9.x/initials/svg?seed=${name}`}
             alt="avatar"
-            className="w-16 h-16 rounded-full border-2 border-gray-300 dark:border-gray-700"
+            className="w-16 h-16 rounded-full border-2 border-gray-300 dark:border-gray-700 relative z-0"
           />
           <div>
             <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
