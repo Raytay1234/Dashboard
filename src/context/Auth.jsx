@@ -10,44 +10,72 @@ const Auth = ({ onAuthSuccess }) => {
   });
 
   const handleChange = (e) => {
-    const { name, value, files } = e.target;
-    if (name === "profilePic" && files.length > 0) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setFormData((prev) => ({ ...prev, profilePic: reader.result }));
-      };
-      reader.readAsDataURL(files[0]);
-    } else {
-      setFormData({ ...formData, [name]: value });
-    }
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handlePicUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setFormData((prev) => ({ ...prev, profilePic: reader.result }));
+    };
+    reader.readAsDataURL(file);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!isLogin && (!formData.name || !formData.email || !formData.password)) {
-      alert("Please fill all fields");
-      return;
+    let users = JSON.parse(localStorage.getItem("users")) || [];
+
+    if (isLogin) {
+      // 🔑 LOGIN
+      const existingUser = users.find(
+        (u) => u.email === formData.email && u.password === formData.password
+      );
+
+      if (existingUser) {
+        localStorage.setItem("loggedInUser", JSON.stringify(existingUser));
+        onAuthSuccess(existingUser);
+      } else {
+        alert("Invalid email or password");
+      }
+    } else {
+      // 📝 SIGNUP
+      if (users.find((u) => u.email === formData.email)) {
+        alert("User already exists");
+        return;
+      }
+
+      const newUser = {
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+        bio: "A short bio about yourself...",
+        location: "Nairobi, Kenya",
+        profilePic: formData.profilePic || null,
+      };
+
+      users.push(newUser);
+      localStorage.setItem("users", JSON.stringify(users));
+      localStorage.setItem("loggedInUser", JSON.stringify(newUser));
+      onAuthSuccess(newUser);
     }
-
-    // Save to localStorage
-    localStorage.setItem("loggedInUser", JSON.stringify(formData));
-
-    onAuthSuccess(formData);
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
-      <div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-md">
-        <h2 className="text-2xl font-bold text-center mb-6 text-gray-800 dark:text-white">
+      <div className="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-md w-full max-w-md">
+        <h2 className="text-2xl font-bold text-center text-gray-800 dark:text-white mb-6">
           {isLogin ? "Login" : "Sign Up"}
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {!isLogin && (
             <>
+              {/* Name */}
               <div>
-                <label className="block text-gray-700 dark:text-gray-300">
+                <label className="block text-gray-700 dark:text-gray-300 font-medium">
                   Full Name
                 </label>
                 <input
@@ -55,26 +83,29 @@ const Auth = ({ onAuthSuccess }) => {
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
-                  className="w-full mt-1 px-3 py-2 border rounded-lg dark:bg-gray-700 dark:text-white"
+                  className="w-full mt-1 px-3 py-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  required
                 />
               </div>
+
+              {/* Profile Picture */}
               <div>
-                <label className="block text-gray-700 dark:text-gray-300">
+                <label className="block text-gray-700 dark:text-gray-300 font-medium">
                   Profile Picture
                 </label>
                 <input
                   type="file"
-                  name="profilePic"
                   accept="image/*"
-                  onChange={handleChange}
+                  onChange={handlePicUpload}
                   className="w-full mt-1"
                 />
               </div>
             </>
           )}
 
+          {/* Email */}
           <div>
-            <label className="block text-gray-700 dark:text-gray-300">
+            <label className="block text-gray-700 dark:text-gray-300 font-medium">
               Email
             </label>
             <input
@@ -82,12 +113,14 @@ const Auth = ({ onAuthSuccess }) => {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className="w-full mt-1 px-3 py-2 border rounded-lg dark:bg-gray-700 dark:text-white"
+              className="w-full mt-1 px-3 py-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+              required
             />
           </div>
 
+          {/* Password */}
           <div>
-            <label className="block text-gray-700 dark:text-gray-300">
+            <label className="block text-gray-700 dark:text-gray-300 font-medium">
               Password
             </label>
             <input
@@ -95,7 +128,8 @@ const Auth = ({ onAuthSuccess }) => {
               name="password"
               value={formData.password}
               onChange={handleChange}
-              className="w-full mt-1 px-3 py-2 border rounded-lg dark:bg-gray-700 dark:text-white"
+              className="w-full mt-1 px-3 py-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+              required
             />
           </div>
 
@@ -107,7 +141,7 @@ const Auth = ({ onAuthSuccess }) => {
           </button>
         </form>
 
-        <p className="text-center text-gray-600 dark:text-gray-300 mt-4">
+        <p className="mt-4 text-center text-gray-600 dark:text-gray-400">
           {isLogin ? "Don't have an account?" : "Already have an account?"}{" "}
           <button
             onClick={() => setIsLogin(!isLogin)}

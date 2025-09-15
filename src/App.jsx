@@ -17,13 +17,13 @@ const App = ({ user, setUser }) => {
     { title: "Card Title 3", content: "This is some content for card 3." },
   ]);
 
-  // Logout
+  // Logout handler
   const handleLogout = () => {
-    localStorage.removeItem("loggedInUser");
-    setUser(null);
+    localStorage.removeItem("loggedInUser"); // clear storage
+    setUser(null); // reset user state -> back to Auth page
   };
 
-  // Add, Delete, Update, Filter cards
+  // Add new card
   const handleNewItem = () => {
     const newCard = {
       title: `Card Title ${cards.length + 1}`,
@@ -32,16 +32,19 @@ const App = ({ user, setUser }) => {
     setCards([...cards, newCard]);
   };
 
+  // Delete a card
   const handleDeleteCard = (index) => {
     setCards(cards.filter((_, i) => i !== index));
   };
 
+  // Update a card
   const handleUpdateCard = (index, updatedCard) => {
     const newCards = [...cards];
     newCards[index] = updatedCard;
     setCards(newCards);
   };
 
+  // Filter cards by search
   const filteredCards = cards.filter(
     (card) =>
       card.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -63,7 +66,8 @@ const App = ({ user, setUser }) => {
           isOpen={isSidebarOpen}
           onClose={() => setIsSidebarOpen(false)}
           onNavigate={(page) => setActivePage(page)}
-          onLogout={handleLogout} // 🔑 pass logout here
+          user={user}
+          onLogout={handleLogout} // pass logout function
         />
 
         {/* Page content */}
@@ -77,10 +81,7 @@ const App = ({ user, setUser }) => {
           )}
           {activePage === "analytics" && <Analytics />}
           {activePage === "settings" && <Settings />}
-          {activePage === "profile" && <Profile user={user} />}
-          {activePage === "logout" && (
-            <h2 className="text-2xl font-bold text-red-500">👋 Logged Out</h2>
-          )}
+          {activePage === "profile" && <Profile user={user} setUser={setUser} />}
         </main>
       </div>
     </div>
