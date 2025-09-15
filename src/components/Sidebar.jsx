@@ -1,5 +1,5 @@
 import React from "react";
-import { Home, BarChart2, Settings, LogOut } from "lucide-react";
+import { Home, BarChart2, Settings, LogOut, User } from "lucide-react";
 
 const Sidebar = ({ isOpen, onClose, onNavigate }) => {
   const handleNavClick = (page) => {
@@ -25,6 +25,7 @@ const Sidebar = ({ isOpen, onClose, onNavigate }) => {
         `}
       >
         <nav className="p-6 space-y-4">
+          {/* Home */}
           <button
             onClick={() => handleNavClick("home")}
             className="flex items-center space-x-3 p-2 rounded-md hover:bg-gray-700 transition w-full text-left"
@@ -32,6 +33,7 @@ const Sidebar = ({ isOpen, onClose, onNavigate }) => {
             <Home size={20} /> <span>Home</span>
           </button>
 
+          {/* Analytics */}
           <button
             onClick={() => handleNavClick("analytics")}
             className="flex items-center space-x-3 p-2 rounded-md hover:bg-gray-700 transition w-full text-left"
@@ -39,6 +41,15 @@ const Sidebar = ({ isOpen, onClose, onNavigate }) => {
             <BarChart2 size={20} /> <span>Analytics</span>
           </button>
 
+          {/* My Profile */}
+          <button
+            onClick={() => handleNavClick("profile")}
+            className="flex items-center space-x-3 p-2 rounded-md hover:bg-gray-700 transition w-full text-left"
+          >
+            <User size={20} /> <span>My Profile</span>
+          </button>
+
+          {/* Settings */}
           <button
             onClick={() => handleNavClick("settings")}
             className="flex items-center space-x-3 p-2 rounded-md hover:bg-gray-700 transition w-full text-left"
@@ -46,6 +57,7 @@ const Sidebar = ({ isOpen, onClose, onNavigate }) => {
             <Settings size={20} /> <span>Settings</span>
           </button>
 
+          {/* Logout */}
           <button
             onClick={() => handleNavClick("logout")}
             className="flex items-center space-x-3 p-2 rounded-md hover:bg-gray-700 transition w-full text-left text-red-400"

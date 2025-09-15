@@ -4,6 +4,7 @@ import Sidebar from "./components/Sidebar";
 import Dashboard from "./components/Dashboard";
 import Analytics from "./components/Analytics";
 import Settings from "./components/Settings";
+import Profile from "./components/Profile"; // 👈 import Profile
 
 const App = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -62,7 +63,7 @@ const App = () => {
         />
 
         {/* Page content */}
-        <main className="flex-1 overflow-y-auto bg-gray-100 p-6">
+        <main className="flex-1 overflow-y-auto bg-gray-100 dark:bg-gray-950 p-6">
           {activePage === "home" && (
             <Dashboard
               cards={filteredCards}
@@ -72,6 +73,7 @@ const App = () => {
           )}
           {activePage === "analytics" && <Analytics />}
           {activePage === "settings" && <Settings />}
+          {activePage === "profile" && <Profile />} {/* 👈 New Profile Page */}
           {activePage === "logout" && (
             <h2 className="text-2xl font-bold text-red-500">👋 Logged Out</h2>
           )}
