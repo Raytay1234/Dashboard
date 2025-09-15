@@ -1,14 +1,51 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const Profile = () => {
   const [name, setName] = useState("John Doe");
   const [bio, setBio] = useState("A short bio about yourself...");
   const [location, setLocation] = useState("Nairobi, Kenya");
+  const [profilePic, setProfilePic] = useState(null);
   const [editing, setEditing] = useState(false);
 
+  // Load saved profile data from localStorage
+  useEffect(() => {
+    const savedProfile = JSON.parse(localStorage.getItem("userProfile"));
+    if (savedProfile) {
+      setName(savedProfile.name || "John Doe");
+      setBio(savedProfile.bio || "");
+      setLocation(savedProfile.location || "");
+      setProfilePic(savedProfile.profilePic || null);
+    }
+  }, []);
+
+  // Handle image upload & preview
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProfilePic(reader.result); // Base64 preview
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // Remove profile picture
+  const handleRemoveImage = () => {
+    setProfilePic(null);
+  };
+
+  // Save profile data to localStorage
   const handleSave = () => {
+    const userProfile = {
+      name,
+      bio,
+      location,
+      profilePic,
+    };
+    localStorage.setItem("userProfile", JSON.stringify(userProfile));
     setEditing(false);
-    alert("Profile updated!");
+    alert("Profile updated & saved!");
   };
 
   return (
@@ -21,9 +58,12 @@ const Profile = () => {
         {/* Avatar */}
         <div className="flex items-center space-x-4">
           <img
-            src={`https://api.dicebear.com/9.x/initials/svg?seed=${name}`}
+            src={
+              profilePic ||
+              `https://api.dicebear.com/9.x/initials/svg?seed=${name}`
+            }
             alt="avatar"
-            className="w-16 h-16 rounded-full border-2 border-gray-300 dark:border-gray-700 relative z-0"
+            className="w-16 h-16 rounded-full border-2 border-gray-300 dark:border-gray-700 object-cover"
           />
           <div>
             <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
@@ -42,6 +82,31 @@ const Profile = () => {
             }}
             className="space-y-4"
           >
+            {/* Upload Profile Picture */}
+            <div>
+              <label className="block text-gray-700 dark:text-gray-300 font-medium">
+                Profile Picture
+              </label>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                className="mt-1 block w-full text-sm text-gray-600 dark:text-gray-300 file:mr-4 file:py-2 file:px-4
+                  file:rounded-lg file:border-0 file:text-sm file:font-semibold
+                  file:bg-blue-600 file:text-white hover:file:bg-blue-700"
+              />
+
+              {profilePic && (
+                <button
+                  type="button"
+                  onClick={handleRemoveImage}
+                  className="mt-2 text-sm text-red-500 hover:text-red-700"
+                >
+                  Remove Picture
+                </button>
+              )}
+            </div>
+
             <div>
               <label className="block text-gray-700 dark:text-gray-300 font-medium">
                 Full Name
