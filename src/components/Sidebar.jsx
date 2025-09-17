@@ -1,5 +1,5 @@
 import React from "react";
-import { Home, BarChart2, Settings, LogOut, User } from "lucide-react";
+import { Home, BarChart2, Settings as SettingsIcon, LogOut, User } from "lucide-react";
 
 const Sidebar = ({ isOpen, onClose, onNavigate, user, onLogout }) => {
   const handleNavClick = (page) => {
@@ -11,7 +11,7 @@ const Sidebar = ({ isOpen, onClose, onNavigate, user, onLogout }) => {
     <>
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-40 sm:hidden"
+          className="fixed inset-0 bg-black bg-opacity-40 sm:hidden z-40"
           onClick={onClose}
         ></div>
       )}
@@ -22,6 +22,7 @@ const Sidebar = ({ isOpen, onClose, onNavigate, user, onLogout }) => {
           transition-transform duration-300 ease-in-out
           ${isOpen ? "translate-x-0" : "-translate-x-full"} 
           sm:translate-x-0 sm:static sm:flex-shrink-0
+          z-50
         `}
       >
         {/* User Profile Section */}
@@ -61,6 +62,14 @@ const Sidebar = ({ isOpen, onClose, onNavigate, user, onLogout }) => {
             className="flex items-center space-x-3 p-2 rounded-md hover:bg-gray-700 transition w-full text-left"
           >
             <User size={20} /> <span>My Profile</span>
+          </button>
+
+          {/* ✅ New Settings Tab */}
+          <button
+            onClick={() => handleNavClick("settings")}
+            className="flex items-center space-x-3 p-2 rounded-md hover:bg-gray-700 transition w-full text-left"
+          >
+            <SettingsIcon size={20} /> <span>Settings</span>
           </button>
 
           <button

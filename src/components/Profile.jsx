@@ -41,12 +41,12 @@ const Profile = ({ user, setUser }) => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto relative z-0">
+    <div className="max-w-2xl mx-auto relative">
       <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-6">
         👤 My Profile
       </h2>
 
-      <div className="bg-white dark:bg-gray-900 rounded-xl shadow p-6 space-y-6 relative z-0">
+      <div className="bg-white dark:bg-gray-900 rounded-xl shadow p-6 space-y-6">
         {/* Avatar */}
         <div className="flex items-center space-x-4">
           <img
