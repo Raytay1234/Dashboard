@@ -1,7 +1,9 @@
 import React, { useState } from "react";
-import { Menu } from "lucide-react";
+import { Menu, User } from "lucide-react";
+import { useAuth } from "../context/useAuth";
 
-const Navbar = ({ onToggleSidebar, onSearch, onNewItem }) => {
+const Navbar = ({ onToggleSidebar, onSearch }) => {
+  const { user, logout } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleSearchChange = (e) => {
@@ -10,9 +12,13 @@ const Navbar = ({ onToggleSidebar, onSearch, onNewItem }) => {
     if (onSearch) onSearch(value);
   };
 
+  const handleLogout = () => {
+    logout();
+  };
+
   return (
     <nav className="h-16 bg-gray-800 text-white flex items-center justify-between px-4 sm:px-6 shadow-md">
-      {/* Left side */}
+      {/* Left side: Sidebar toggle & title */}
       <div className="flex items-center space-x-3">
         <button
           className="sm:hidden p-2 rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -23,7 +29,7 @@ const Navbar = ({ onToggleSidebar, onSearch, onNewItem }) => {
         <h1 className="text-xl sm:text-2xl font-bold">My Dashboard</h1>
       </div>
 
-      {/* Right side */}
+      {/* Right side: Search & User info */}
       <div className="flex items-center space-x-3 sm:space-x-4">
         <input
           type="text"
@@ -33,12 +39,29 @@ const Navbar = ({ onToggleSidebar, onSearch, onNewItem }) => {
           className="hidden sm:block px-3 py-1.5 rounded-lg bg-gray-700 text-sm sm:text-base text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
 
-        <button
-          onClick={onNewItem}
-          className="bg-blue-500 hover:bg-blue-600 text-white font-medium py-1.5 sm:py-2 px-3 sm:px-4 rounded-lg shadow transition"
-        >
-          New Item
-        </button>
+        {/* User avatar and name */}
+        {user && (
+          <div className="flex items-center gap-3 bg-gray-700 px-3 py-1.5 rounded-lg">
+            {user.avatar ? (
+              <img
+                src={user.avatar}
+                alt="Avatar"
+                className="w-8 h-8 rounded-full object-cover"
+              />
+            ) : (
+              <User size={24} className="text-white" />
+            )}
+            <span className="hidden sm:block font-medium">{user.name}</span>
+
+            {/* Logout button */}
+            <button
+              onClick={handleLogout}
+              className="ml-3 text-gray-200 hover:text-white focus:outline-none"
+            >
+              Logout
+            </button>
+          </div>
+        )}
       </div>
     </nav>
   );
